@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI PRD Generator Demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --accent-glow: rgba(0, 163, 255, 0.3);
+            --accent-primary: #00a3ff;
+            --accent-secondary: #7000ff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: blur(12px);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+        .glass { background: var(--bg-card); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .section-padding { padding: 80px 0; }
+        .text-gradient { background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); }
+        .btn-primary:hover { transform: scale(1.05); }
+        .btn-secondary { background: transparent; color: white; border: 1px solid var(--glass-border); padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); }
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        pre { background: #0a0a0a; padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); overflow-x: auto; color: #00ffc3; font-family: monospace; font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid var(--glass-border); }
+        th { color: var(--text-muted); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Navbar = () => (
+            <nav className="glass" style={{ position: 'fixed', top: '1rem', left: '50%', transform: 'translateX(-50%)', width: '90%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.8rem 2rem', zIndex: 1000 }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>PRD<span className="text-gradient">AI</span></div>
+                <button className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Mulai</button>
+            </nav>
+        );
+
+        const Hero = ({ onStart }) => (
+            <section className="section-padding fade-in" style={{ textAlign: 'center', marginTop: '4rem' }}>
+                <div className="container">
+                    <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', lineHeight: '1.2' }}>Rancang Produk <br /> <span className="text-gradient">Lebih Kompleks & Cepat</span></h1>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>Gunakan AI untuk membuat PRD lengkap dengan skema database dan arsitektur sistem dalam hitungan detik.</p>
+                    <button className="btn-primary" onClick={onStart} style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>Bikin PRD Sekarang</button>
+                </div>
+            </section>
+        );
+
+        const PRDForm = ({ onSubmit }) => {
+            const [step, setStep] = useState(1);
+            const [name, setName] = useState('');
+            return (
+                <div className="glass fade-in" style={{ padding: '3rem', maxWidth: '600px', margin: '2rem auto' }}>
+                    <h2 style={{ marginBottom: '1.5rem' }}>{step === 1 ? 'Nama Produk Anda?' : 'Skala Teknis?'}</h2>
+                    {step === 1 ? (
+                        <input className="glass" style={{ width: '100%', padding: '1rem', color: 'white', marginBottom: '2rem' }} placeholder="Contoh: TokoKita" value={name} onChange={e => setName(e.target.value)} />
+                    ) : (
+                        <select className="glass" style={{ width: '100%', padding: '1rem', color: 'white', background: '#111', marginBottom: '2rem' }}>
+                            <option>Kecil (MVP)</option>
+                            <option>Menengah (Bisnis)</option>
+                            <option>Besar (Enterprise)</option>
+                        </select>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        {step === 1 ? <button className="btn-primary" onClick={() => setStep(2)}>Lanjut</button> : <button className="btn-primary" onClick={() => onSubmit(name)}>Hasilkan PRD ✨</button>}
+                    </div>
+                </div>
+            );
+        };
+
+        const PRDResult = ({ data }) => (
+            <div className="container section-padding fade-in">
+                <h1 className="text-gradient" style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>{data.title}</h1>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat( auto-fit, minmax(300px, 1fr) )', gap: '1.5rem' }}>
+                    <div className="glass" style={{ padding: '2rem', gridColumn: 'span 2' }}>
+                        <h3 style={{ color: 'var(--accent-primary)', marginBottom: '1rem' }}>Visi Produk</h3>
+                        <p style={{ color: 'var(--text-muted)' }}>Membangun platform revolusioner untuk {data.title}.</p>
+                    </div>
+                    <div className="glass" style={{ padding: '2rem' }}>
+                        <h3 style={{ color: 'var(--accent-primary)', marginBottom: '1rem' }}>Arsitektur</h3>
+                        <p style={{ fontSize: '0.9rem' }}>Microservices, Docker, Redis, Postgres.</p>
+                    </div>
+                    <div className="glass" style={{ padding: '2rem', gridColumn: 'span 2' }}>
+                        <h3 style={{ color: 'var(--accent-primary)', marginBottom: '1rem' }}>Skema Database (SQL)</h3>
+                        <pre>{`CREATE TABLE Users (\n  id UUID PRIMARY KEY,\n  email VARCHAR(255) UNIQUE\n);\n\nCREATE TABLE Orders (\n  id UUID PRIMARY KEY,\n  user_id UUID REFERENCES Users(id)\n);`}</pre>
+                    </div>
+                    <div className="glass" style={{ padding: '2rem' }}>
+                        <h3 style={{ color: 'var(--accent-primary)', marginBottom: '1rem' }}>API Docs</h3>
+                        <table style={{ fontSize: '0.8rem' }}>
+                            <tr><th>POST</th><td>/api/login</td></tr>
+                            <tr><th>GET</th><td>/api/data</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const App = () => {
+            const [view, setView] = useState('hero');
+            const [data, setData] = useState(null);
+            
+            const handleFormSubmit = (name) => {
+                setView('loading');
+                setTimeout(() => {
+                    setData({ title: name });
+                    setView('result');
+                }, 1500);
+            };
+
+            return (
+                <div className="App">
+                    <Navbar />
+                    <main>
+                        {view === 'hero' && <Hero onStart={() => setView('form')} />}
+                        {view === 'form' && <PRDForm onSubmit={handleFormSubmit} />}
+                        {view === 'loading' && <div className="section-padding" style={{ textAlign: 'center' }}><h2>Menganalisis...</h2></div>}
+                        {view === 'result' && <PRDResult data={data} />}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
