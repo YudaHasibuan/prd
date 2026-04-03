@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const TYPING_WORDS = ['Database Schema', 'System Architecture', 'API Docs', 'User Stories', 'Product Roadmap'];
 
-const Hero = ({ onStart }) => {
+const Hero = ({ onStart, onViewExample }) => {
   const [wordIndex, setWordIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -89,7 +89,7 @@ const Hero = ({ onStart }) => {
           <button className="btn-primary" onClick={onStart} style={{ padding: '1rem 2.5rem', fontSize: '1.05rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             ✨ Bikin PRD Sekarang
           </button>
-          <button className="btn-secondary" onClick={onStart} style={{ padding: '1rem 2rem', fontSize: '1.05rem', borderRadius: '12px' }}>
+          <button className="btn-secondary" onClick={onViewExample} style={{ padding: '1rem 2rem', fontSize: '1.05rem', borderRadius: '12px' }}>
             Lihat Contoh →
           </button>
         </div>

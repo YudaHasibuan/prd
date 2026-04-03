@@ -5,6 +5,7 @@ import PRDForm from './components/PRDForm';
 import PRDResult from './components/PRDResult';
 import LoginPage from './components/LoginPage';
 import { supabase } from './lib/supabaseClient';
+import { samplePRD } from './data/samplePRD';
 import './index.css';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -40,6 +41,11 @@ function App() {
       return;
     }
     setView('form');
+  };
+
+  const handleViewExample = () => {
+    setPrdData(samplePRD);
+    setView('result');
   };
 
   const repairJSON = (str) => {
@@ -138,9 +144,20 @@ Skema JSON:
 
   return (
     <div className="App">
-      <Navbar onStart={startGeneration} onLogin={goToLogin} user={user} />
-      <main>
-        {view === 'hero' && <Hero onStart={startGeneration} />}
+      <Navbar 
+        user={user} 
+        onStart={startGeneration} 
+        onLogin={goToLogin}
+        onViewExample={handleViewExample}
+      />
+
+      <main style={{ flex: 1, padding: '1rem' }}>
+        {view === 'hero' && (
+          <Hero 
+            onStart={startGeneration} 
+            onViewExample={handleViewExample} 
+          />
+        )}
         {view === 'login' && (
           <div style={{ minHeight: '100vh' }}>
             <LoginPage />

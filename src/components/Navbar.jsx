@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const SUPABASE_ACTIVE = !!(import.meta.env.VITE_SUPABASE_URL && !import.meta.env.VITE_SUPABASE_URL?.includes('GANTI'));
 
-const Navbar = ({ onStart, onLogin, user }) => {
+const Navbar = ({ onStart, onLogin, onViewExample, user }) => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    window.location.reload();
   };
 
   const getAvatar = () => user?.user_metadata?.avatar_url || null;
@@ -17,7 +26,10 @@ const Navbar = ({ onStart, onLogin, user }) => {
       position: 'fixed', top: '1rem', left: '50%', transform: 'translateX(-50%)',
       width: 'min(90%, 1100px)', display: 'flex', justifyContent: 'space-between',
       alignItems: 'center', padding: '0.8rem 2rem', zIndex: 1000,
-      border: '1px solid var(--glass-border)'
+      border: '1px solid var(--glass-border)',
+      background: scrolled ? 'rgba(10,10,15,0.85)' : 'rgba(255,255,255,0.03)',
+      backdropFilter: 'blur(16px)',
+      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
     }}>
       {/* Logo */}
       <div onClick={() => window.location.reload()} style={{ fontSize: '1.3rem', fontWeight: 800, cursor: 'pointer' }}>
@@ -26,7 +38,10 @@ const Navbar = ({ onStart, onLogin, user }) => {
 
       {/* Nav Links + Auth */}
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem' }}>Fitur</a>
+        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+          <a href="#" style={{ textDecoration: 'none', color: 'inherit' }}>Fitur</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); onViewExample(); }} style={{ textDecoration: 'none', color: 'var(--primary)', cursor: 'pointer' }}>Contoh</a>
+        </div>
 
         {SUPABASE_ACTIVE && user ? (
           /* ── Sudah Login ── */
